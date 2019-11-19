@@ -40,15 +40,15 @@ def error_for_list_name(name)
     "List name must be between 1 and 100 characters."
   elsif session[:lists].any? {|list| list[:name] == name}
     "List name must be unique."
-  else
-    false
   end
 end
 
 # Create a new list
 post "/lists" do
   list_name = params[:list_name].strip
-  if error = error_for_list_name(list_name)
+
+  error = error_for_list_name(list_name)
+  if error
     session[:error] = error
     erb :new_list, layout: :layout
   else
