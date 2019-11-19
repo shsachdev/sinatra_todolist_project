@@ -15,8 +15,6 @@ get "/" do
   redirect "/lists"
 end
 
-get "/"
-
 # GET /lists => view all lists
 # GET /lists/new => new list form
 # POST /lists => create new list
@@ -30,9 +28,18 @@ get "/lists" do
   erb :lists, layout: :layout
 end
 
+# get "/lists/:number" do
+#   @num = params[:number].to_i
+# end
+
 # Render the new list form
-get "/lists/new" do
-  erb :new_list, layout: :layout
+get "/lists/:new" do
+  if params[:new] == "new"
+    erb :new_list, layout: :layout
+  else
+    @num = params[:new].to_i
+    erb :single_todo, layout: :layout
+  end
 end
 
 # Return an error message if the name is invalid
