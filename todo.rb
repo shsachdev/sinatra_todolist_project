@@ -15,6 +15,8 @@ get "/" do
   redirect "/lists"
 end
 
+get "/"
+
 # GET /lists => view all lists
 # GET /lists/new => new list form
 # POST /lists => create new list
