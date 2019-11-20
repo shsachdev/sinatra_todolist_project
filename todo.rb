@@ -40,7 +40,7 @@ get "/lists/:id/edit" do
   erb :edit_list_name, layout: :layout
 end
 
-post "/edit" do
+post "/edit" do # start here tomorrow
   redirect "lists"
 end
 
