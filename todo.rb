@@ -58,6 +58,7 @@ post "/lists" do
   end
 end
 
-get "lists/:id" do
-  params[:id]
+get "/lists/:id" do
+  @list = session[:lists][params[:id].to_i]
+  erb :new_list, layout: :layout
 end
