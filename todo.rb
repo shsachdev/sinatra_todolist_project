@@ -60,5 +60,5 @@ end
 
 get "/lists/:id" do
   @list = session[:lists][params[:id].to_i]
-  erb :new_list, layout: :layout
+  erb :single_todo, layout: :layout
 end
