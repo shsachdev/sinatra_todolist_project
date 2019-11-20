@@ -37,6 +37,7 @@ end
 # render the edit list_name form
 
 get "/lists/:id/edit" do
+  params[:id]
 end
 
 # Return an error message if the name is invalid
