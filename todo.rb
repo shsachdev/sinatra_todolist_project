@@ -28,18 +28,9 @@ get "/lists" do
   erb :lists, layout: :layout
 end
 
-# get "/lists/:number" do
-#   @num = params[:number].to_i
-# end
-
 # Render the new list form
-get "/lists/:new" do
-  if params[:new] == "new"
-    erb :new_list, layout: :layout
-  else
-    @num = params[:new].to_i
-    erb :single_todo, layout: :layout
-  end
+get "/lists/new" do
+  erb :new_list, layout: :layout
 end
 
 # Return an error message if the name is invalid
@@ -65,4 +56,8 @@ post "/lists" do
     session[:success] = "The list has been created."
     redirect "/lists"
   end
+end
+
+get "lists/:id" do
+  params[:id]
 end
