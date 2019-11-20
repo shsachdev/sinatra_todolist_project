@@ -37,7 +37,11 @@ end
 # render the edit list_name form
 
 get "/lists/:id/edit" do
-  params[:id]
+  erb :edit_list_name, layout: :layout
+end
+
+post "/edit" do
+  redirect "lists"
 end
 
 # Return an error message if the name is invalid
