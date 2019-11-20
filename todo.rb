@@ -34,6 +34,11 @@ get "/lists/new" do
   erb :new_list, layout: :layout
 end
 
+# render the edit list_name form
+
+get "/lists/:id/edit" do
+end
+
 # Return an error message if the name is invalid
 
 def error_for_list_name(name)
