@@ -37,6 +37,7 @@ end
 # render the edit list_name form
 
 get "/lists/:id/edit" do
+  @num = params[:id].to_i
   erb :edit_list_name, layout: :layout
 end
 
