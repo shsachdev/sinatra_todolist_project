@@ -41,7 +41,7 @@ get "/lists/:id/edit" do
   erb :edit_list_name, layout: :layout
 end
 
-post "/lists/:id" do # start here tomorrow
+post "/:id" do # start here tomorrow
   new_list_name = params[:list_name].strip
   error = error_for_list_name(new_list_name)
   if error
