@@ -40,9 +40,20 @@ get "/lists/:id/edit" do
   erb :edit_list_name, layout: :layout
 end
 
-post "/edit" do # start here tomorrow
-  redirect "lists"
+post "/lists/:id" do # start here tomorrow
+  new_list_name = params[:list_name].strip
+  error = error_for_list_name(new_list_name)
+  if error
+    session[:error] = error
+    erb :edit_list_name, layout: :layout
+  else
+    @lists = session[:lists]
+    @lists[params[:id].to_i][:name] = new_list_name
+    redirect "/lists"
+  end
 end
+
+# you're basically just trying to update a hash. but how to get correct index?
 
 # Return an error message if the name is invalid
 
