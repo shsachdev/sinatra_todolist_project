@@ -37,14 +37,16 @@ end
 # Update an existing to do list.
 post "/lists/:id" do
   new_list_name = params[:list_name].strip
+  @list = session[:lists][params[:id].to_i]
+
   error = error_for_list_name(new_list_name)
   if error
     session[:error] = error
     erb :edit_list_name, layout: :layout
   else
-    @lists = session[:lists]
-    @lists[params[:id].to_i][:name] = new_list_name
-    redirect "/lists"
+    @list[:name] = new_list_name
+    session[:success] = "The list has been updated."
+    redirect "/lists/#{params[:id]}"
   end
 end
 
@@ -52,7 +54,6 @@ end
 
 get "/lists/:id/edit" do
   @list = session[:lists][params[:id].to_i]
-  @num = params[:id].to_i
   erb :edit_list_name, layout: :layout
 end
 
