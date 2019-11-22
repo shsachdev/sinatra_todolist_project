@@ -57,6 +57,13 @@ get "/lists/:id/edit" do
   erb :edit_list_name, layout: :layout
 end
 
+# delete a list, render back to the all list page
+
+get "/lists/delete/:id" do
+  session[:lists].delete_at(params[:id].to_i)
+  redirect "/lists"
+end
+
 # you're basically just trying to update a hash. but how to get correct index?
 
 # Return an error message if the name is invalid

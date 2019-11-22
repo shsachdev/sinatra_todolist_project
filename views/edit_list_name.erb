@@ -12,3 +12,9 @@
     <a href="/lists/<%= params[:id]%>">Cancel</a>
   </fieldset>
 </form>
+
+<h1> Editing <%="#{@list[:name]}"%> </h1>
+
+<fieldset class="actions">
+  <a href="/lists/delete/<%= params[:id]%>">Delete List</a>
+</fieldset>
