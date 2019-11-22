@@ -34,14 +34,8 @@ get "/lists/new" do
   erb :new_list, layout: :layout
 end
 
-# render the edit list_name form
-
-get "/lists/:id/edit" do
-  @num = params[:id].to_i
-  erb :edit_list_name, layout: :layout
-end
-
-post "/:id" do # start here tomorrow
+# Update an existing to do list.
+post "/lists/:id" do
   new_list_name = params[:list_name].strip
   error = error_for_list_name(new_list_name)
   if error
@@ -52,6 +46,14 @@ post "/:id" do # start here tomorrow
     @lists[params[:id].to_i][:name] = new_list_name
     redirect "/lists"
   end
+end
+
+# render the edit list_name form
+
+get "/lists/:id/edit" do
+  @list = session[:lists][params[:id].to_i]
+  @num = params[:id].to_i
+  erb :edit_list_name, layout: :layout
 end
 
 # you're basically just trying to update a hash. but how to get correct index?
