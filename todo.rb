@@ -111,8 +111,11 @@ end
 
 post "/lists/:list_id/todos" do
   todo_name = params[:todo].strip
+  @list = session[:lists][params[:list_id].to_i]
+
   error = error_for_todo_name(todo_name,params[:list_id].to_i)
   if error
+    @list = session[:lists][params[:list_id].to_i]
     session[:error] = error
     erb :single_todo, layout: :layout
   else

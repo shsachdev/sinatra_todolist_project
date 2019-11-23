@@ -5,7 +5,6 @@
       <li><a class = "edit" href="/lists/<%= params[:id]%>/edit">Edit List</a></li>
     </ul>
   </header>
-
     <ul>
       <% @list[:todos].each_with_index do |todo, index| %>
         <li>
@@ -13,7 +12,6 @@
         </li>
       <% end %>
     </ul>
-
 </section>
 
 <form action="/lists/<%= params[:id] %>/todos" method="post">
