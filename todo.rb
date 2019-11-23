@@ -109,8 +109,15 @@ end
 
 # Create a new todo item
 
-post "/lists/:id/todos" do
+post "/lists/:list_id/todos" do
   todo_name = params[:todo].strip
-  error = error_for_todo_name(todo_name,params[:id].to_i)
-
+  error = error_for_todo_name(todo_name,params[:list_id].to_i)
+  if error
+    session[:error] = error
+    erb :single_todo, layout: :layout
+  else
+    session[:lists][params[:list_id].to_i][:todos] << {name: todo_name, completed: false}
+    session[:success] = "The todo has been created."
+    redirect "/"
+  end
 end
