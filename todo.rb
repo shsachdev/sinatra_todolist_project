@@ -77,6 +77,16 @@ def error_for_list_name(name)
   end
 end
 
+# Return an error message if the todo name is invalid
+
+def error_for_todo_name(name, idx)
+  if !(1..100).cover? name.size
+    "Todo name must be between 1 and 100 characters."
+  elsif session[:lists][idx][:todos].any? {|todo| todo == name}
+    "Todo name must be unique."
+  end
+end
+
 # Create a new list
 post "/lists" do
   list_name = params[:list_name].strip
@@ -95,4 +105,12 @@ end
 get "/lists/:id" do
   @list = session[:lists][params[:id].to_i]
   erb :single_todo, layout: :layout
+end
+
+# Create a new todo item
+
+post "/lists/:id/todos" do
+  todo_name = params[:todo].strip
+  error = error_for_todo_name(todo_name,params[:id].to_i)
+
 end
