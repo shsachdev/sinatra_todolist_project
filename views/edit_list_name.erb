@@ -1,13 +1,11 @@
-<ul id="lists">
-  <%@lists.each_with_index do |list, index| %>
-    <li>
-      <a href="/lists/<%= index%>">
-        <h2> <%= list[:name] %></h2>
-         <p><%= list[:todos].size %></p>
-        </a>
-      </li>
-  <% end%>
-</ul>
+<section id="todos">
+  <header>
+    <h2><%= @list[:name] %></h2>
+    <ul>
+      <li><a class = "edit" href="/lists/delete/<%= params[:id]%>">Delete List</a></li>
+    </ul>
+  </header>
+</section>
 
 <form action="/lists/<%= params[:id]%>" method="post">
   <d1>
@@ -23,9 +21,3 @@
     <a href="/lists/<%= params[:id]%>">Cancel</a>
   </fieldset>
 </form>
-
-<h1> Editing <%="#{@list[:name]}"%> </h1>
-
-<fieldset class="actions">
-  <a href="/lists/delete/<%= params[:id]%>">Delete List</a>
-</fieldset>
