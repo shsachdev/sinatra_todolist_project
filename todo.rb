@@ -59,7 +59,7 @@ end
 
 # delete a list, render back to the all list page
 # here, we should probably render a "your list has been successfully deleted" page.
-get "/lists/delete/:id" do
+get "/lists/:id/destroy" do
   session[:lists].delete_at(params[:id].to_i)
   redirect "/lists"
 end
