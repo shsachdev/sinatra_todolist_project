@@ -100,8 +100,10 @@ post "/lists" do
   end
 end
 
+# View a single todo list
 get "/lists/:id" do
-  @list = session[:lists][params[:id].to_i]
+  @list_id = params[:id].to_i
+  @list = session[:lists][@list_id]
   erb :single_todo, layout: :layout
 end
 
@@ -109,7 +111,8 @@ end
 
 post "/lists/:list_id/todos" do
   todo_name = params[:todo].strip
-  @list = session[:lists][params[:list_id].to_i]
+  @list_id = params[:list_id].to_i
+  @list = session[:lists][@list_id]
   error = error_for_todo_name(todo_name)
   if error
     session[:error] = error
@@ -117,6 +120,6 @@ post "/lists/:list_id/todos" do
   else
     @list[:todos] << {name: todo_name, completed: false}
     session[:success] = "The todo was added."
-    redirect "/lists/#{params[:list_id]}"
+    redirect "/lists/#{@list_id}"
   end
 end
