@@ -117,7 +117,7 @@ post "/lists/:list_id/todos" do
     erb :single_todo, layout: :layout
   else
     session[:lists][params[:list_id].to_i][:todos] << {name: todo_name, completed: false}
-    session[:success] = "The todo has been created."
-    redirect "/"
+    session[:success] = "The todo was added."
+    redirect "/lists/#{params[:list_id]}"
   end
 end
