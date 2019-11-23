@@ -61,6 +61,7 @@ end
 # here, we should probably render a "your list has been successfully deleted" page.
 post "/lists/:id/destroy" do
   session[:lists].delete_at(params[:id].to_i)
+  session[:success] = "The list has been deleted."
   redirect "/lists"
 end
 
