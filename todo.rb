@@ -149,3 +149,9 @@ post "/lists/:list_id/todos/:id" do
   session[:success] = "The todo has been updated."
   redirect "/lists/#{@list_id}"
 end
+
+# Mark all todos as completed
+
+post do
+
+end
