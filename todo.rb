@@ -152,6 +152,6 @@ end
 
 # Mark all todos as completed
 
-post do
+post do "/lists/complete"
 
 end
