@@ -1,10 +1,4 @@
-<% if list_complete?(@list) %>
-  <section id="todos" class = "complete">
-<% elsif list_new?(@list) %>
-  < section id = "todos" class = "new"
-<% else %>
-  <section id = "todos">
-<% end %>
+<section id="todos" class="<%= list_class(@list) %>">  
   <header>
     <h2><%= @list[:name] %></h2>
     <ul>

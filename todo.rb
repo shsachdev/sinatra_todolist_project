@@ -12,6 +12,18 @@ helpers do
   def list_complete?(list)
     list[:todos].size > 0 && list[:todos].all? {|todo| todo[:completed]}
   end
+
+  def list_class(list)
+    "complete" if list_complete?(list)
+  end
+
+  def todos_remaining_count(list)
+    list[:todos].select {|todo| todo[:completed]}.size
+  end
+
+  def todos_count(list)
+    list[:todos].size
+  end
 end
 
 before do
