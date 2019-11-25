@@ -152,6 +152,12 @@ end
 
 # Mark all todos as completed
 
-post do "/lists/complete"
-
+post "/lists/:list_id/todos/complete_all" do
+  @list_id = params[:list_id].to_i
+  @list = session[:lists][@list_id]
+  @list[:todos].each do |todo|
+    todo[:completed] = true
+  end
+  session[:success] = "All todos have been completed."
+  redirect "/lists/#{@list_id}"
 end
