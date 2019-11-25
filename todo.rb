@@ -8,6 +8,12 @@ configure do
   set :session_secret, 'secret'
 end
 
+helpers do
+  def list_complete?(list)
+    list[:todos].size > 0 && list[:todos].all? {|todo| todo[:completed]}
+  end
+end
+
 before do
   session[:lists] ||= []
 end
@@ -15,13 +21,6 @@ end
 get "/" do
   redirect "/lists"
 end
-
-# GET /lists => view all lists
-# GET /lists/new => new list form
-# POST /lists => create new list
-# GET /lists/1 => view a single list
-
-# resource type + ID of whatever the object is
 
 # View list of lists
 get "/lists" do
