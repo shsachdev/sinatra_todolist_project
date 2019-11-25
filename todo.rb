@@ -10,7 +10,7 @@ end
 
 helpers do
   def list_complete?(list)
-    list[:todos].size > 0 && list[:todos].all? {|todo| todo[:completed]}
+    todos_count(list) > 0 && todos_remaining_count(list) == 0
   end
 
   def list_class(list)
@@ -18,11 +18,43 @@ helpers do
   end
 
   def todos_remaining_count(list)
-    list[:todos].select {|todo| todo[:completed]}.size
+    list[:todos].select {|todo| !todo[:completed]}.size
   end
 
   def todos_count(list)
     list[:todos].size
+  end
+
+  def sort_lists(lists, &block)
+    incomplete_lists = {}
+    complete_lists = {}
+
+    lists.each_with_index do |list, index|
+      if list_complete?(list)
+        complete_lists[list] = index
+      else
+        incomplete_lists[list] = index
+      end
+    end
+
+    incomplete_lists.each(&block)
+    complete_lists.each(&block)
+  end
+
+  def sort_todos(todos, &block)
+    incomplete_todos = {}
+    complete_todos = {}
+
+    todos.each_with_index do |todo, index|
+      if todo[:completed]
+        complete_todos[todo] = index
+      else
+        incomplete_todos[todo] = index
+      end
+    end
+
+    incomplete_todos.each(&block)
+    complete_todos.each(&block)
   end
 end
 
