@@ -12,6 +12,14 @@ configure do
   set :erb, :escape_html => true
 end
 
+def load_list(index)
+  list = session[:lists][index] if index && session[:lists][index]
+  return list if list
+
+  session[:error] = "The specified list was not found."
+  redirect "/lists"
+end
+
 helpers do
   def list_complete?(list)
     todos_count(list) > 0 && todos_remaining_count(list) == 0
@@ -84,7 +92,8 @@ end
 # Update an existing to do list.
 post "/lists/:id" do
   new_list_name = params[:list_name].strip
-  @list = session[:lists][params[:id].to_i]
+  id = params[:id].to_i
+  @list = load_list(id)
 
   error = error_for_list_name(new_list_name)
   if error
@@ -100,7 +109,8 @@ end
 # render the edit list_name form
 
 get "/lists/:id/edit" do
-  @list = session[:lists][params[:id].to_i]
+  id = params[:id].to_i
+  @list = load_list(id)
   erb :edit_list_name, layout: :layout
 end
 
@@ -150,7 +160,7 @@ end
 # View a single todo list
 get "/lists/:id" do
   @list_id = params[:id].to_i
-  @list = session[:lists][@list_id]
+  @list = load_list(@list_id)
   erb :single_todo, layout: :layout
 end
 
@@ -159,7 +169,7 @@ end
 post "/lists/:list_id/todos" do
   todo_name = params[:todo].strip
   @list_id = params[:list_id].to_i
-  @list = session[:lists][@list_id]
+  @list = load_list(@list_id)
   error = error_for_todo_name(todo_name)
   if error
     session[:error] = error
@@ -175,7 +185,7 @@ end
 
 post "/lists/:list_id/todos/:id/destroy" do
   @list_id = params[:list_id].to_i
-  @list = session[:lists][@list_id]
+  @list = load_list(@list_id)
 
   todo_id = params[:id].to_i
 
@@ -188,7 +198,7 @@ end
 
 post "/lists/:list_id/todos/:id" do
   @list_id = params[:list_id].to_i
-  @list = session[:lists][@list_id]
+  @list = load_list(@list_id)
 
   todo_id = params[:id].to_i
   is_completed = params[:completed] == "true"
@@ -201,7 +211,7 @@ end
 
 post "/lists/:list_id/complete_all" do
   @list_id = params[:list_id].to_i
-  @list = session[:lists][@list_id]
+  @list = load_list(@list_id)
   @list[:todos].each do |todo|
     todo[:completed] = true
   end
