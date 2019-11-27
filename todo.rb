@@ -168,7 +168,7 @@ get "/lists/:id" do
   erb :single_todo, layout: :layout
 end
 
-def next_todo_id(list)
+def next_todo_id(todos)
   max = list.map {|todo| todo[:id]}.max
   max + 1
 end
@@ -183,7 +183,7 @@ post "/lists/:list_id/todos" do
     session[:error] = error
     erb :single_todo, layout: :layout
   else
-    id = next_todo_id(@list)
+    id = next_todo_id(@list[:todos])
     @list[:todos] << {id: id, name: todo_name, completed: false}
     session[:success] = "The todo was added."
     redirect "/lists/#{@list_id}"
