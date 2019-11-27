@@ -54,16 +54,7 @@ helpers do
   end
 
   def sort_todos(todos, &block)
-    incomplete_todos = {}
-    complete_todos = {}
-
-    todos.each_with_index do |todo, index|
-      if todo[:completed]
-        complete_todos[todo] = index
-      else
-        incomplete_todos[todo] = index
-      end
-    end
+    complete_todos, incomplete_todos = todos.partition { |todo| todo[:completed] }
 
     incomplete_todos.each(&block)
     complete_todos.each(&block)
@@ -169,7 +160,7 @@ get "/lists/:id" do
 end
 
 def next_todo_id(todos)
-  max = list.map {|todo| todo[:id]}.max
+  max = todos.map {|todo| todo[:id]}.max || 0
   max + 1
 end
 
@@ -198,7 +189,7 @@ post "/lists/:list_id/todos/:id/destroy" do
 
   todo_id = params[:id].to_i
 
-  @list[:todos].delete_at(todo_id)
+  @list[:todos].reject! { |todo| todo[:id] == todo_id }
   if env["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest"
     status 204
   else
@@ -215,7 +206,8 @@ post "/lists/:list_id/todos/:id" do
 
   todo_id = params[:id].to_i
   is_completed = params[:completed] == "true"
-  @list[:todos][todo_id][:completed] = is_completed
+  todo = @list[:todos].find {|todo| todo[:id] == todo_id}
+  todo[:completed] = is_completed
   session[:success] = "The todo has been updated."
   redirect "/lists/#{@list_id}"
 end
