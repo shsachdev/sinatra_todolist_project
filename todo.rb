@@ -118,8 +118,12 @@ end
 # here, we should probably render a "your list has been successfully deleted" page.
 post "/lists/:id/destroy" do
   session[:lists].delete_at(params[:id].to_i)
-  session[:success] = "The list has been deleted."
-  redirect "/lists"
+  if env["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest"
+    "/lists"
+  else
+    session[:success] = "The list has been deleted."
+    redirect "/lists"
+  end
 end
 
 # you're basically just trying to update a hash. but how to get correct index?
