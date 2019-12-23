@@ -25,6 +25,38 @@ class SessionPersistence
   def all_lists
     @session[:lists]
   end
+
+  def create_new_list(list_name)
+    id = next_element_id(@session[:lists])
+    @session[:lists] << {id: id, name: list_name, todos: []}
+  end
+
+  def delete_list(id)
+    @session[:lists].delete_at(id)
+  end
+
+  def update_list_name(id, new_list_name)
+    list = find_list(id)
+    list[:name] = new_list_name
+  end
+
+  def create_new_todo(list_id, new_todo_name)
+    list = find_list(list_id)
+    id = next_element_id(list[:todos])
+    list[:todos] << {id: id, name: new_todo_name, completed: false}
+  end
+
+  def delete_todo_from_list(list_id, todo_id)
+    list = find_list(list_id)
+    list[:todos].reject! { |todo| todo[:id] == todo_id }
+  end
+
+  private
+
+  def next_element_id(elements)
+    max = elements.map {|todo| todo[:id]}.max || 0
+    max + 1
+  end
 end
 
 def load_list(index)
@@ -86,7 +118,7 @@ end
 
 # View list of lists
 get "/lists" do
-  @lists = session[:lists]
+  @lists = @storage.all_lists
   erb :lists, layout: :layout
 end
 
@@ -106,7 +138,7 @@ post "/lists/:id" do
     session[:error] = error
     erb :edit_list_name, layout: :layout
   else
-    @list[:name] = new_list_name
+    @storage.update_list_name(id, new_list_name)
     session[:success] = "The list has been updated."
     redirect "/lists/#{params[:id]}"
   end
@@ -123,7 +155,8 @@ end
 # delete a list, render back to the all list page
 # here, we should probably render a "your list has been successfully deleted" page.
 post "/lists/:id/destroy" do
-  session[:lists].delete_at(params[:id].to_i)
+  id = params[:id].to_i
+  @storage.delete_list(id)
   if env["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest"
     "/lists"
   else
@@ -161,7 +194,7 @@ post "/lists" do
     session[:error] = error
     erb :new_list, layout: :layout
   else
-    session[:lists] << {name: list_name, todos: []}
+    @storage.create_new_list(list_name)
     session[:success] = "The list has been created."
     redirect "/lists"
   end
@@ -189,8 +222,7 @@ post "/lists/:list_id/todos" do
     session[:error] = error
     erb :single_todo, layout: :layout
   else
-    id = next_todo_id(@list[:todos])
-    @list[:todos] << {id: id, name: todo_name, completed: false}
+    @storage.create_new_todo(@list_id, todo_name)
     session[:success] = "The todo was added."
     redirect "/lists/#{@list_id}"
   end
@@ -203,8 +235,7 @@ post "/lists/:list_id/todos/:id/destroy" do
   @list = load_list(@list_id)
 
   todo_id = params[:id].to_i
-
-  @list[:todos].reject! { |todo| todo[:id] == todo_id }
+  @storage.delete_todo_from_list(@list_id, todo_id)
   if env["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest"
     status 204
   else
