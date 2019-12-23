@@ -13,6 +13,7 @@ configure do
 end
 
 def load_list(index)
+  list = @storage.find_list(id)
   list = session[:lists][index] if index && session[:lists][index]
   return list if list
 
