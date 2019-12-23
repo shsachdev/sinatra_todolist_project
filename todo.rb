@@ -57,6 +57,13 @@ class SessionPersistence
     todo[:completed] = is_completed
   end
 
+  def complete_all_todos(list_id)
+    list = find_list(list_id)
+    list[:todos].each do |todo|
+      todo[:completed] = true
+    end
+  end
+
   private
 
   def next_element_id(elements)
@@ -270,9 +277,8 @@ end
 post "/lists/:list_id/complete_all" do
   @list_id = params[:list_id].to_i
   @list = load_list(@list_id)
-  @list[:todos].each do |todo|
-    todo[:completed] = true
-  end
+  @storage.complete_all_todos(@list_id)
+
   session[:success] = "All todos have been completed."
   redirect "/lists/#{@list_id}"
 end
