@@ -51,6 +51,12 @@ class SessionPersistence
     list[:todos].reject! { |todo| todo[:id] == todo_id }
   end
 
+  def update_todo_status(list_id, todo_id, is_completed)
+    list = find_list(list_id)
+    todo = list[:todos].find {|todo| todo[:id] == todo_id}
+    todo[:completed] = is_completed
+  end
+
   private
 
   def next_element_id(elements)
@@ -252,8 +258,9 @@ post "/lists/:list_id/todos/:id" do
 
   todo_id = params[:id].to_i
   is_completed = params[:completed] == "true"
-  todo = @list[:todos].find {|todo| todo[:id] == todo_id}
-  todo[:completed] = is_completed
+
+  @storage.update_todo_status(@list_id, todo_id, is_completed)
+
   session[:success] = "The todo has been updated."
   redirect "/lists/#{@list_id}"
 end
