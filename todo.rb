@@ -19,7 +19,7 @@ class SessionPersistence
   end
 
   def find_list(id)
-    @session[:lists][id] if index && session[:lists][id]
+    @session[:lists][id] if id && @session[:lists][id]
   end
 
   def all_lists
@@ -73,7 +73,7 @@ class SessionPersistence
 end
 
 def load_list(index)
-  list = @storage.find_list(id)
+  list = @storage.find_list(index)
   return list if list
 
   session[:error] = "The specified list was not found."
