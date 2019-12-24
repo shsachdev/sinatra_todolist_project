@@ -1,4 +1,5 @@
 require 'pg'
+require 'pry'
 
 class DatabasePersistence
   def initialize(logger)
@@ -17,25 +18,30 @@ class DatabasePersistence
     result = query(sql, id)
     todo_result = query(sql_todos, id)
     tuple = result.first
-    {id: tuple["id"], name: tuple["name"], todos: get_todos(todo_result)}
+    todos = get_todos(todo_result)
+    {id: tuple["id"], name: tuple["name"], todos: todos}
   end
 
   def get_todos(result)
     result.map do |tuple|
-      {id: tuple["id"], name: tuple["name"], completed: tuple["completed"]}
+      {id: tuple["id"].to_i,
+      name: tuple["name"],
+      completed: tuple["completed"] == "t"}
     end
   end
 
   def all_lists
     sql = "SELECT * FROM lists"
     result = query(sql)
-    todo_result = query(sql_todos, id)
     result.map do |tuple|
       list_id = tuple["id"]
       sql_todos = "SELECT id, name, completed FROM todo WHERE list_id = $1"
       todo_result = query(sql_todos, list_id)
+      todos = get_todos(todo_result)
 
-      {id: list_id, name: tuple["name"], todos: get_todos(todo_result)}
+      # binding.pry
+
+      {id: list_id, name: tuple["name"], todos: todos}
     end
   end
 
