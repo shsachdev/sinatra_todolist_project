@@ -1,5 +1,4 @@
 require "sinatra"
-require "sinatra/reloader" if development?
 require "tilt/erubis"
 require "sinatra/content_for"
 
@@ -8,12 +7,13 @@ require_relative 'database_persistence'
 configure do
   enable :sessions
   set :session_secret, 'secret'
-end
-
-configure do
   set :erb, :escape_html => true
 end
 
+configure(:development) do
+  require "sinatra/reloader"
+  also_reload "database_persistence.rb"
+end
 
 def load_list(index)
   list = @storage.find_list(index)
