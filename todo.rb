@@ -15,6 +15,10 @@ configure(:development) do
   also_reload "database_persistence.rb"
 end
 
+after do
+  @storage.disconnect
+end
+
 def load_list(index)
   list = @storage.find_list(index)
   return list if list

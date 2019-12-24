@@ -3,8 +3,16 @@ require 'pry'
 
 class DatabasePersistence
   def initialize(logger)
-    @db = PG.connect(dbname: "todos")
+    @db = if Sinatra::Base.production?
+        PG.connect(ENV['DATABASE_URL'])
+      else
+        PG.connect(dbname: "todos")
+      end
     @logger = logger
+  end
+
+  def disconnect
+    @db.close
   end
 
   def query(statement, *params)
@@ -41,7 +49,7 @@ class DatabasePersistence
   end
 
   def delete_list(id)
-    query("DELETE FROM todos WHERE list_id = $1", id)
+    query("DELETE FROM todo WHERE list_id = $1", id)
     query("DELETE FROM lists WHERE id = $1", id)
   end
 
