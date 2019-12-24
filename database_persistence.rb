@@ -29,8 +29,13 @@ class DatabasePersistence
   def all_lists
     sql = "SELECT * FROM lists"
     result = query(sql)
+    todo_result = query(sql_todos, id)
     result.map do |tuple|
-      {id: tuple["id"], name: tuple["name"], todos: []}
+      list_id = tuple["id"]
+      sql_todos = "SELECT id, name, completed FROM todo WHERE list_id = $1"
+      todo_result = query(sql_todos, list_id)
+
+      {id: list_id, name: tuple["name"], todos: get_todos(todo_result)}
     end
   end
 
