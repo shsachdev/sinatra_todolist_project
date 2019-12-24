@@ -1,21 +1,34 @@
 require 'pg'
 
 class DatabasePersistence
-  def initialize
+  def initialize(logger)
     @db = PG.connect(dbname: "todos")
+    @logger = logger
+  end
+
+  def query(statement, *params)
+    @logger.info "#{statement}: #{params}"
+    @db.exec_params(statement, params)
   end
 
   def find_list(id)
     sql = "SELECT * FROM lists WHERE id = $1"
-    result = @db.exec_params(sql, [id])
+    sql_todos = "SELECT id, name, completed FROM todo WHERE list_id = $1"
+    result = query(sql, id)
+    todo_result = query(sql_todos, id)
     tuple = result.first
-    {id: tuple["id"], name: tuple["name"], todos: []}
+    {id: tuple["id"], name: tuple["name"], todos: get_todos(todo_result)}
+  end
+
+  def get_todos(result)
+    result.map do |tuple|
+      {id: tuple["id"], name: tuple["name"], completed: tuple["completed"]}
+    end
   end
 
   def all_lists
     sql = "SELECT * FROM lists"
-    result = @db.exec(sql)
-
+    result = query(sql)
     result.map do |tuple|
       {id: tuple["id"], name: tuple["name"], todos: []}
     end
