@@ -31,8 +31,6 @@ class DatabasePersistence
       todo_result = query(sql_todos, list_id)
       todos = get_todos(todo_result)
 
-      # binding.pry
-
       {id: list_id, name: tuple["name"], todos: todos}
     end
   end
@@ -53,27 +51,22 @@ class DatabasePersistence
   end
 
   def create_new_todo(list_id, new_todo_name)
-    # list = find_list(list_id)
-    # id = next_element_id(list[:todos])
-    # list[:todos] << {id: id, name: new_todo_name, completed: false}
+    sql = "INSERT INTO todo (name, list_id) VALUES ($1, $2)"
+    query(sql, new_todo_name, list_id)
   end
 
   def delete_todo_from_list(list_id, todo_id)
-    # list = find_list(list_id)
-    # list[:todos].reject! { |todo| todo[:id] == todo_id }
+    query("DELETE FROM todo WHERE list_id = $1 AND id = $2", list_id, todo_id)
   end
 
   def update_todo_status(list_id, todo_id, is_completed)
-    # list = find_list(list_id)
-    # todo = list[:todos].find {|t| t[:id] == todo_id}
-    # todo[:completed] = is_completed
+    sql = "UPDATE todo SET completed = $1 WHERE list_id = $2 AND id = $3"
+    query(sql, is_completed, list_id, todo_id)
   end
 
   def complete_all_todos(list_id)
-    # list = find_list(list_id)
-    # list[:todos].each do |todo|
-    #   todo[:completed] = true
-    # end
+    sql = "UPDATE todo SET completed = true WHERE list_id = $1"
+    query(sql, list_id)
   end
 
   private
