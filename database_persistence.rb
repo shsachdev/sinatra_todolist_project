@@ -38,8 +38,8 @@ class DatabasePersistence
   end
 
   def create_new_list(list_name)
-    # id = next_element_id(@session[:lists])
-    # @session[:lists] << {id: id, name: list_name, todos: []}
+    sql = "INSERT INTO lists (name) VALUES ($1)"
+    result = query(sql, list_name)
   end
 
   def delete_list(id)
